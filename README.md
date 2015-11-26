@@ -1,5 +1,7 @@
 # whoru
 
+# SUPER ALPHA WARNING. Please wait till this message disappears before using.
+
 Who are you? Tackle the thorny issue of identity association.
 
 This module just tries to relate the following nouns.
