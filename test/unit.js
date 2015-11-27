@@ -61,6 +61,37 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
   })
 })
 
+test('test same fingerprint used in same space on different apps', function (t) {
+  var app2 = 'engine'
+  setup('test3', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err)
+      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err)
+
+        whoaru.login(fingerprint, userloginID, loginType, app2, space, loginDetails, function (err, person2) {
+          t.error(err)
+
+          whoaru.person(fingerprint, app, space, function (err, person_test) {
+            t.error(err)
+            t.equals(person1._id, person_test._id)
+
+            whoaru.person(fingerprint, app2, space, function (err, person_test2) {
+              t.error(err)
+              t.equals(person2._id, person_test2._id)
+              t.end()
+            })
+          })
+        })
+      })
+    })
+  })
+})
+
+
+
 function setup (name, t, cb) {
   levelup('/' + name, {
     db: require('memdown'),
