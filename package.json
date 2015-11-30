@@ -13,6 +13,7 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
+    "circular-json": "^0.3.0",
     "standard": "^4.5.4",
     "tap": "^0.4.12",
     "tape": "^2.14.0"

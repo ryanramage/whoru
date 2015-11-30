@@ -1,7 +1,7 @@
 var Whoaru = require('../lib/index')
 var test = require('tape')
-
 var levelup = require('levelup')
+var CircularJSON = require('circular-json')
 
 var fingerprint = 'abced'
 var app = 'forms'
@@ -52,14 +52,20 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
           whoaru.person(fingerprint, app, space, function (err, person_test) {
             t.error(err)
             t.equals(person1._id, person_test._id)
+            // assert that the right account is selected
+            person_test.accounts.forEach(_account => {
+              if (_account.space === space) {
+                t.ok(_account.selected)
+              }
+            })
             t.end()
           })
-
         })
       })
     })
   })
 })
+
 
 test('test same fingerprint used in same space on different apps', function (t) {
   var app2 = 'engine'
@@ -90,6 +96,67 @@ test('test same fingerprint used in same space on different apps', function (t) 
   })
 })
 
+test('test same fingerprint used to login with a different loginType, same space, and app', function (t) {
+  var userloginID2 = '12345334'
+  var loginType2 = 'facebook'
+  var loginDetails2 = {
+    id: 12345334,
+    id_str: '12345334',
+    name: 'facebook_R',
+    screen_name: 'rua',
+    location: '',
+    profile_location: null,
+    description: ''
+  }
+  setup('test4', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err)
+      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err)
+
+        whoaru.login(fingerprint, userloginID2, loginType2, app, space, loginDetails2, function (err, person2) {
+          t.error(err)
+
+          whoaru.person(fingerprint, app, space, function (err, person_test) {
+            t.error(err)
+            t.equals(person1._id, person_test._id)
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
+
+
+
+
+
+// #####################
+// test('test different fingerprint, but same userLoginID', function (t) {
+//   var fingerprint2 = '2abced2'
+//   setup('test4', t, function (err, db) {
+//     if (err) return console.log(err)
+//     var whoaru = Whoaru(db)
+//     whoaru.addFingerprint(fingerprint, function (err) {
+//       t.error(err)
+//       whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+//         t.error(err)
+//         whoaru.addFingerprint(fingerprint2, function (err) {
+//           t.error(err)
+//           whoaru.login(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
+//             t.equal(person1._id, person2._id)
+//             t.error(err)
+//             t.end()
+//           })
+//         })
+//       })
+//     })
+//   })
+// })
+// ########
 
 
 function setup (name, t, cb) {
