@@ -1,7 +1,6 @@
 var Whoaru = require('../lib/index')
 var test = require('tape')
 var levelup = require('levelup')
-var CircularJSON = require('circular-json')
 
 var fingerprint = 'abced'
 var app = 'forms'
@@ -66,7 +65,6 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
   })
 })
 
-
 test('test same fingerprint used in same space on different apps', function (t) {
   var app2 = 'engine'
   setup('test3', t, function (err, db) {
@@ -130,10 +128,6 @@ test('test same fingerprint used to login with a different loginType, same space
   })
 })
 
-
-
-
-
 // #####################
 // test('test different fingerprint, but same userLoginID', function (t) {
 //   var fingerprint2 = '2abced2'
@@ -157,7 +151,6 @@ test('test same fingerprint used to login with a different loginType, same space
 //   })
 // })
 // ########
-
 
 function setup (name, t, cb) {
   levelup('/' + name, {
