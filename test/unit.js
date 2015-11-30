@@ -17,23 +17,23 @@ var loginDetails = {
   description: ''
 }
 
-test('test basic sequence: adding a fingerprint, login, and search', function (t) {
-  setup('test1', t, function (err, db) {
-    if (err) return console.log(err)
-    var whoaru = Whoaru(db)
-    whoaru.addFingerprint(fingerprint, function (err) {
-      t.error(err)
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person) {
-        t.error(err)
-        whoaru.person(fingerprint, app, space, function (err, person2) {
-          t.error(err)
-          t.equals(person._id, person2._id)
-          t.end()
-        })
-      })
-    })
-  })
-})
+// test('test basic sequence: adding a fingerprint, login, and search', function (t) {
+//   setup('test1', t, function (err, db) {
+//     if (err) return console.log(err)
+//     var whoaru = Whoaru(db)
+//     whoaru.addFingerprint(fingerprint, function (err) {
+//       t.error(err)
+//       whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person) {
+//         t.error(err)
+//         whoaru.person(fingerprint, app, space, function (err, person2) {
+//           t.error(err)
+//           t.equals(person._id, person2._id)
+//           t.end()
+//         })
+//       })
+//     })
+//   })
+// })
 
 test('test same fingerprint used in two spaces on the same app', function (t) {
   var space2 = 'rwp-2037'
@@ -53,11 +53,20 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
             t.equals(person1._id, person_test._id)
             // assert that the right account is selected
             person_test.accounts.forEach(_account => {
-              if (_account.space === space) {
-                t.ok(_account.selected)
-              }
+              if (_account.space === space) t.ok(_account.selected)
             })
-            t.end()
+
+            // check the other account is selected
+            whoaru.person(fingerprint, app, space2, function (err, person_test2) {
+              t.error(err)
+              t.equals(person2._id, person_test2._id)
+              // assert that the right account is selected
+              person_test2.accounts.forEach(_account => {
+                if (_account.space === space2) t.ok(_account.selected)
+              })
+
+              t.end()
+            })
           })
         })
       })
