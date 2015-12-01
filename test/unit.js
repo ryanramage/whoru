@@ -43,22 +43,22 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err)
       whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
-        t.error(err)
+        t.error(err, 'space 1 login')
 
         whoaru.login(fingerprint, userloginID, loginType, app, space2, loginDetails, function (err, person2) {
-          t.error(err)
+          t.error(err, 'space 2 login')
 
           whoaru.person(fingerprint, app, space, function (err, person_test) {
-            t.error(err)
-            t.equals(person1._id, person_test._id)
+            t.error(err, 'space 1 lookup')
+            t.equals(person1._id, person_test._id, 'fingerprints match first app and space')
             // assert that the right account is selected
             person_test.accounts.forEach(_account => {
-              if (_account.space === space) t.ok(_account.selected)
+              if (_account.space === space) t.ok(_account.selected, 'the correct account is selected')
             })
 
             // check the other account is selected
             whoaru.person(fingerprint, app, space2, function (err, person_test2) {
-              t.error(err)
+              t.error(err, 'space 2 lookup')
               t.equals(person2._id, person_test2._id)
               // assert that the right account is selected
               person_test2.accounts.forEach(_account => {
@@ -137,29 +137,27 @@ test('test same fingerprint used to login with a different loginType, same space
   })
 })
 
-// #####################
-// test('test different fingerprint, but same userLoginID', function (t) {
-//   var fingerprint2 = '2abced2'
-//   setup('test4', t, function (err, db) {
-//     if (err) return console.log(err)
-//     var whoaru = Whoaru(db)
-//     whoaru.addFingerprint(fingerprint, function (err) {
-//       t.error(err)
-//       whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
-//         t.error(err)
-//         whoaru.addFingerprint(fingerprint2, function (err) {
-//           t.error(err)
-//           whoaru.login(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
-//             t.equal(person1._id, person2._id)
-//             t.error(err)
-//             t.end()
-//           })
-//         })
-//       })
-//     })
-//   })
-// })
-// ########
+test('test different fingerprint, but same userLoginID', function (t) {
+  var fingerprint2 = '2abced2'
+  setup('test5', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err)
+      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err)
+        whoaru.addFingerprint(fingerprint2, function (err) {
+          t.error(err)
+          whoaru.login(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
+            t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
+            t.error(err)
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
 
 function setup (name, t, cb) {
   levelup('/' + name, {

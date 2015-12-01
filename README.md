@@ -59,8 +59,8 @@ whoru.login(fingerprint, userloginID, loginType, app, space, details, function (
   
 })
 
-// lookup the Person from a fingerprint
-whoru.lookup(fingerprint, function (err, person) {
+// lookup the Person from a fingerprint, given the least info you know
+whoru.lookup(fingerprint, app, space, function (err, person) {
   
 })
 
