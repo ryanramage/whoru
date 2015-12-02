@@ -95,6 +95,11 @@ test('test same fingerprint used in same space on different apps', function (t) 
             whoaru.person(fingerprint, app2, space, function (err, person_test2) {
               t.error(err, 'callback ok')
               t.equals(person2._id, person_test2._id, 'same person on other lookup')
+              t.ok((person_test2.accounts.length > 1), 'should have two seperete accounts')
+              person_test2.accounts.forEach(_account => {
+                if (_account.space === space && _account.app === app2) t.ok(_account.selected, 'the correct account is selected')
+                else t.notOk(_account.selected, 'other accounts are not selected')
+              })
               t.end()
             })
           })
@@ -130,6 +135,9 @@ test('test same fingerprint used to login with a different loginType, same space
           whoaru.person(fingerprint, app, space, function (err, person_test) {
             t.error(err, 'callback ok')
             t.equals(person1._id, person_test._id, 'same person')
+            t.equal(person1.accounts.length, 1, 'only one account')
+            t.equal(person1.accounts[0].space, space, 'account is the right space')
+            t.ok(person1.accounts[0].selected, 'correct account is selected')
             t.end()
           })
         })
@@ -150,11 +158,11 @@ test('test different fingerprint, but same userLoginID', function (t) {
         whoaru.addFingerprint(fingerprint2, function (err) {
           t.error(err, 'callback ok')
           whoaru.login(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
+            t.error(err, 'callback ok')
             t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
             t.equal(person2.accounts.length, 1, 'only one account')
             t.equal(person2.accounts[0].space, space, 'account is the right space')
             t.ok(person2.accounts[0].selected, 'correct account is selected')
-            t.error(err, 'callback ok')
             t.end()
           })
         })
@@ -179,7 +187,7 @@ test('test different fingerprint and space, but same userLoginID', function (t) 
             t.error(err, 'callback ok')
 
             // this should create a new account, because its a different space, but linked to the same person
-            t.ok((person2.accounts.length > 1), 'should have two seperete spaces')
+            t.ok((person2.accounts.length > 1), 'should have two seperete accounts')
 
             t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
             // assert that the right account is selected
