@@ -23,9 +23,9 @@ test('test basic sequence: adding a fingerprint, login, and search', function (t
     var whoaru = Whoaru(db)
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person) {
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person) {
         t.error(err, 'callback ok')
-        whoaru.person(fingerprint, app, space, function (err, person2) {
+        whoaru.findPerson(fingerprint, app, space, function (err, person2) {
           t.error(err, 'callback ok')
           t.equals(person._id, person2._id, 'The person can be found by a fingerprint')
           t.end()
@@ -42,13 +42,13 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
     var whoaru = Whoaru(db)
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
         t.error(err, 'space 1 login')
 
-        whoaru.login(fingerprint, userloginID, loginType, app, space2, loginDetails, function (err, person2) {
+        whoaru.addLogin(fingerprint, userloginID, loginType, app, space2, loginDetails, function (err, person2) {
           t.error(err, 'space 2 login')
 
-          whoaru.person(fingerprint, app, space, function (err, person_test) {
+          whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
             t.error(err, 'space 1 lookup')
             t.equals(person1._id, person_test._id, 'fingerprints match first app and space')
             // assert that the right account is selected
@@ -57,7 +57,7 @@ test('test same fingerprint used in two spaces on the same app', function (t) {
             })
 
             // check the other account is selected
-            whoaru.person(fingerprint, app, space2, function (err, person_test2) {
+            whoaru.findPerson(fingerprint, app, space2, function (err, person_test2) {
               t.error(err, 'space 2 lookup')
               t.equals(person2._id, person_test2._id, 'same person linked to both spaces')
               // assert that the right account is selected
@@ -82,17 +82,17 @@ test('test same fingerprint used in same space on different apps', function (t) 
     var whoaru = Whoaru(db)
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
         t.error(err, 'callback ok')
 
-        whoaru.login(fingerprint, userloginID, loginType, app2, space, loginDetails, function (err, person2) {
+        whoaru.addLogin(fingerprint, userloginID, loginType, app2, space, loginDetails, function (err, person2) {
           t.error(err, 'callback ok')
 
-          whoaru.person(fingerprint, app, space, function (err, person_test) {
+          whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
             t.error(err, 'callback ok')
             t.equals(person1._id, person_test._id, 'same person on lookup')
 
-            whoaru.person(fingerprint, app2, space, function (err, person_test2) {
+            whoaru.findPerson(fingerprint, app2, space, function (err, person_test2) {
               t.error(err, 'callback ok')
               t.equals(person2._id, person_test2._id, 'same person on other lookup')
               t.ok((person_test2.accounts.length > 1), 'should have two seperete accounts')
@@ -126,13 +126,13 @@ test('test same fingerprint used to login with a different loginType, same space
     var whoaru = Whoaru(db)
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
         t.error(err, 'callback ok')
 
-        whoaru.login(fingerprint, userloginID2, loginType2, app, space, loginDetails2, function (err, person2) {
+        whoaru.addLogin(fingerprint, userloginID2, loginType2, app, space, loginDetails2, function (err, person2) {
           t.error(err, 'callback ok')
 
-          whoaru.person(fingerprint, app, space, function (err, person_test) {
+          whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
             t.error(err, 'callback ok')
             t.equals(person1._id, person_test._id, 'same person')
             t.equal(person1.accounts.length, 1, 'only one account')
@@ -153,11 +153,11 @@ test('test different fingerprint, but same userLoginID', function (t) {
     var whoaru = Whoaru(db)
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
         t.error(err, 'callback ok')
         whoaru.addFingerprint(fingerprint2, function (err) {
           t.error(err, 'callback ok')
-          whoaru.login(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
+          whoaru.addLogin(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
             t.error(err, 'callback ok')
             t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
             t.equal(person2.accounts.length, 1, 'only one account')
@@ -179,11 +179,11 @@ test('test different fingerprint and space, but same userLoginID', function (t) 
     var whoaru = Whoaru(db)
     whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
-      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
         t.error(err, 'callback ok')
         whoaru.addFingerprint(fingerprint2, function (err) {
           t.error(err, 'callback ok')
-          whoaru.login(fingerprint2, userloginID, loginType, app, space2, loginDetails, function (err, person2) {
+          whoaru.addLogin(fingerprint2, userloginID, loginType, app, space2, loginDetails, function (err, person2) {
             t.error(err, 'callback ok')
 
             // this should create a new account, because its a different space, but linked to the same person

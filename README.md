@@ -55,17 +55,17 @@ whoru.addFingerprint(fingerprint, deviceInfo, function(err) {
 
 // ################################
 // associate the fingerprint with the login and, eg after they login
-whoru.login(fingerprint, userloginID, loginType, app, space, details, function (err, person) {
+whoru.addLogin(fingerprint, userloginID, loginType, app, space, details, function (err, person) {
   
 })
 
 // lookup the Person from a fingerprint, given the least info you know
-whoru.lookup(fingerprint, app, space, function (err, person) {
+whoru.findPerson(fingerprint, app, space, function (err, person) {
   
 })
 
-// object stream of all accounts of a fingerprint
-whoru.allDetails(fingerprint).pipe(through2.obj(function(detail, enc, cb) {
+// object stream of all details of a fingerprint, will include login, account, and person details
+whoru.findDetails(fingerprint).pipe(through2.obj(function(detail, enc, cb) {
   console.log(detail.doc) //the actual doc one of
   switch(detail.type) {
     case 'login'
