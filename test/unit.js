@@ -150,7 +150,42 @@ test('test different fingerprint, but same userLoginID', function (t) {
           t.error(err)
           whoaru.login(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
             t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
+            t.equal(person2.accounts.length, 1, 'only one account')
+            t.equal(person2.accounts[0].space, space, 'account is the right space')
+            t.ok(person2.accounts[0].selected, 'correct account is selected')
             t.error(err)
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
+
+test('test different fingerprint and space, but same userLoginID', function (t) {
+  var fingerprint2 = '2abced2'
+  var space2 = 'rwp-2037'
+  setup('test6', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err)
+      whoaru.login(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err)
+        whoaru.addFingerprint(fingerprint2, function (err) {
+          t.error(err)
+          whoaru.login(fingerprint2, userloginID, loginType, app, space2, loginDetails, function (err, person2) {
+            t.error(err)
+
+            // this should create a new account, because its a different space, but linked to the same person
+            t.ok((person2.accounts.length > 1), 'should have two seperete spaces')
+
+            t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
+            // assert that the right account is selected
+            person2.accounts.forEach(_account => {
+              if (_account.space === space2) t.ok(_account.selected, 'the correct account is selected')
+              else t.notOk(_account.selected, 'other accounts are not selected')
+            })
             t.end()
           })
         })
