@@ -209,7 +209,7 @@ test('merge two people into one', function (t) {
   setup('test7', t, function (err, db) {
     if (err) return console.log(err)
     var whoaru = Whoaru(db)
-     whoaru.addFingerprint(fingerprint, function (err) {
+    whoaru.addFingerprint(fingerprint, function (err) {
       t.error(err, 'callback ok')
       whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
         t.error(err, 'callback ok')
@@ -221,7 +221,8 @@ test('merge two people into one', function (t) {
               t.error(err, 'successfully merged')
               whoaru.getPerson(person1._id, function (err, person_full) {
                 t.error(err, 'callback ok')
-                console.log(JSON.stringify(person_full))
+                t.equals(person_full.accounts.length, 1, 'account got merged because it was the same app and space')
+                t.equals(person_full.accounts[0].logins.length, 2, 'logins were different so they did not get merged')
                 t.end()
               })
             })
@@ -231,7 +232,6 @@ test('merge two people into one', function (t) {
     })
   })
 })
-
 
 function setup (name, t, cb) {
   levelup('/' + name, {
