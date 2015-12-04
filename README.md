@@ -32,47 +32,74 @@ npm install whoru
 
 ## Usage
 
-``` js
-var levelup = require('levelup')
-var db = levelup('./mydb')
-var whoru = require('whoru')(db)
+First of all, you need to fingerprint on the client device. Something like
 
 
-// somewhere on the client
-var Fingerprint2 = require('fingerprint2')
-new Fingerprint2().get(function (fingerprint, components) {
-  console.log('your device fingerpring', fingerprint)
-})
+    // somewhere on the client
+    var Fingerprint2 = require('fingerprint2')
+    new Fingerprint2().get(function (fingerprint, components) {
+      console.log('your device fingerpring', fingerprint)
+    })
 
-// ##############################
-// Add the fingerprint to the db
-// back to where we have whoru
-whoru.addFingerprint(fingerprint)
-whoru.addFingerprint(fingerprint, deviceInfo)
-whoru.addFingerprint(fingerprint, deviceInfo, function(err) {   
-  // err if there was a problem adding the fingerprint
-})
+Back on the server you will add this fingerprint as soon as you can. Eg, you dont need login info
 
-// ################################
-// associate the fingerprint with the login and, eg after they login
-whoru.addLogin(fingerprint, userloginID, loginType, app, space, details, function (err, person) {
-  
-})
+    var levelup = require('levelup')
+    var db = levelup('./mydb')
+    var whoru = require('whoru')(db)
 
-// lookup the Person from a fingerprint, given the least info you know
-whoru.findPerson(fingerprint, app, space, function (err, person) {
-  
-})
 
-// object stream of all details of a fingerprint, will include login, account, and person details
-whoru.findDetails(fingerprint).pipe(through2.obj(function(detail, enc, cb) {
-  console.log(detail.doc) //the actual doc one of
-  switch(detail.type) {
-    case 'login'
-    case 'account'
-    case 'person'
-  }
-}))
+    // ##############################
+    // Add the fingerprint to the db
+    // back to where we have whoru
+    whoru.addFingerprint(fingerprint)
+    whoru.addFingerprint(fingerprint, deviceInfo)
+    whoru.addFingerprint(fingerprint, deviceInfo, function(err) {   
+      // err if there was a problem adding the fingerprint
+    })
+
+
+Now assume the person logins in. At this point we know a lot more about the person. You should inform whoaru with this info
+The details of all the params
+
+ - fingerprint which was obtained from before
+ - userLoginID. Some unique id from your login service. Could be a primary key from a DB or an ID from a OAUTH service.
+ - loginType. A string to indentify how the userLoginID is unique. EG, 'db', 'facebook', 'twitter'
+ - app. A string to identify the app they logged into, in a multi-app environment, Eg 'wiki', 'forum', 'chat'
+ - space. A logical grouping across apps. Useful if you host multiple websites with different branding. Eg 'coke', '7-up'
+ - details. Any additional data you want to store about the login
+
+Here is an example of the call:
+
+    // ################################
+    // associate the fingerprint with the login and, eg after they login
+    whoru.addLogin(fingerprint, userloginID, loginType, app, space, details, function (err, person) {
+      
+    })
+
+Now sometime later, you want to see who an anonymous user is.
+
+    // lookup the Person from a fingerprint, given the least info you know
+    whoru.findPerson(fingerprint, app, space, function (err, person) {
+      
+    })
+
+Or find any related details of a fingerprint
+
+    // object stream of all details of a fingerprint, will include login, account, and person details
+    whoru.findDetails(fingerprint).pipe(through2.obj(function(detail, enc, cb) {
+      console.log(detail.doc) //the actual doc one of
+      switch(detail.type) {
+        case 'login'
+        case 'account'
+        case 'person'
+      }
+    }))
+
+The end user can decided that two users are actually the same, and decide to merge them
+
+    whoaru.mergePerson(from_person_id, to_person_id, function(err)) {
+
+    }
 
 
 
