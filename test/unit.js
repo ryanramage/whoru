@@ -118,67 +118,67 @@ test('test same fingerprint used in same space on different apps', function (t) 
   })
 })
 
-// test('test same fingerprint used to login with a different loginType, same space, and app', function (t) {
-//   var userloginID2 = '12345334'
-//   var loginType2 = 'facebook'
-//   var loginDetails2 = {
-//     id: 12345334,
-//     id_str: '12345334',
-//     name: 'facebook_R',
-//     screen_name: 'rua',
-//     location: '',
-//     profile_location: null,
-//     description: ''
-//   }
-//   setup('test4', t, function (err, db) {
-//     if (err) return console.log(err)
-//     var whoaru = Whoaru(db)
-//     whoaru.addFingerprint(fingerprint, function (err) {
-//       t.error(err, 'callback ok')
-//       whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
-//         t.error(err, 'callback ok')
+test('test same fingerprint used to login with a different loginType, same space, and app', function (t) {
+  var userloginID2 = '12345334'
+  var loginType2 = 'facebook'
+  var loginDetails2 = {
+    id: 12345334,
+    id_str: '12345334',
+    name: 'facebook_R',
+    screen_name: 'rua',
+    location: '',
+    profile_location: null,
+    description: ''
+  }
+  setup('test4', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err, 'callback ok')
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err, 'callback ok')
 
-//         whoaru.addLogin(fingerprint, userloginID2, loginType2, app, space, loginDetails2, function (err, person2) {
-//           t.error(err, 'callback ok')
+        whoaru.addLogin(fingerprint, userloginID2, loginType2, app, space, loginDetails2, function (err, person2) {
+          t.error(err, 'callback ok')
 
-//           whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
-//             t.error(err, 'callback ok')
-//             t.equals(person1._id, person_test._id, 'same person')
-//             t.equal(person1.accounts.length, 1, 'only one account')
-//             t.equal(person1.accounts[0].space, space, 'account is the right space')
-//             t.ok(person1.accounts[0].selected, 'correct account is selected')
-//             t.end()
-//           })
-//         })
-//       })
-//     })
-//   })
-// })
+          whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
+            t.error(err, 'callback ok')
+            t.equals(person1._id, person_test._id, 'same person')
+            t.equal(person1.accounts.length, 1, 'only one account')
+            t.equal(person1.accounts[0].space, space, 'account is the right space')
+            t.ok(person1.accounts[0].selected, 'correct account is selected')
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
 
-// test('test different fingerprint, but same userLoginID', function (t) {
-//   var fingerprint2 = '2abced2'
-//   setup('test5', t, function (err, db) {
-//     if (err) return console.log(err)
-//     var whoaru = Whoaru(db)
-//     whoaru.addFingerprint(fingerprint, function (err) {
-//       t.error(err, 'callback ok')
-//       whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
-//         t.error(err, 'callback ok')
-//         whoaru.addFingerprint(fingerprint2, function (err) {
-//           t.error(err, 'callback ok')
-//           whoaru.addLogin(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
-//             t.error(err, 'callback ok')
-//             t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
-//             t.equal(person2.accounts.length, 1, 'only one account')
-//             t.equal(person2.accounts[0].space, space, 'account is the right space')
-//             t.ok(person2.accounts[0].selected, 'correct account is selected')
-//             t.end()
-//           })
-//         })
-//       })
-//     })
-//   })
-// })
+test('test different fingerprint, but same userLoginID', function (t) {
+  var fingerprint2 = '2abced2'
+  setup('test5', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err, 'callback ok')
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err, 'callback ok')
+        whoaru.addFingerprint(fingerprint2, function (err) {
+          t.error(err, 'callback ok')
+          whoaru.addLogin(fingerprint2, userloginID, loginType, app, space, loginDetails, function (err, person2) {
+            t.error(err, 'callback ok')
+            t.equal(person1._id, person2._id, 'person should be matched by userLoginID')
+            t.equal(person2.accounts.length, 1, 'only one account')
+            t.equal(person2.accounts[0].space, space, 'account is the right space')
+            t.ok(person2.accounts[0].selected, 'correct account is selected')
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
 
 test('test different fingerprint and space, but same userLoginID', function (t) {
   var fingerprint2 = '2abced2'
@@ -244,7 +244,7 @@ test('test different fingerprint and space, but same userLoginID', function (t) 
 
 function setup (name, t, cb) {
 
-  var db = new PouchDB('dbname', {db : require('memdown')});
+  var db = new PouchDB(name, {db : require('memdown')});
 
   cb(null, db)
 }
