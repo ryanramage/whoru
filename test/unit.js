@@ -212,35 +212,35 @@ test('test different fingerprint and space, but same userLoginID', function (t) 
   })
 })
 
-// test('merge two people into one', function (t) {
-//   var fingerprint2 = '2abced2'
-//   var userloginID2 = 'asff2fdsd'
-//   setup('test7', t, function (err, db) {
-//     if (err) return console.log(err)
-//     var whoaru = Whoaru(db)
-//     whoaru.addFingerprint(fingerprint, function (err) {
-//       t.error(err, 'callback ok')
-//       whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
-//         t.error(err, 'callback ok')
-//         whoaru.addFingerprint(fingerprint2, function (err) {
-//           t.error(err, 'callback ok')
-//           whoaru.addLogin(fingerprint2, userloginID2, loginType, app, space, loginDetails, function (err, person2) {
-//             t.error(err, 'callback ok')
-//             whoaru.mergePerson(person2._id, person1._id, function (err) {
-//               t.error(err, 'successfully merged')
-//               whoaru.getPerson(person1._id, function (err, person_full) {
-//                 t.error(err, 'callback ok')
-//                 t.equals(person_full.accounts.length, 1, 'account got merged because it was the same app and space')
-//                 t.equals(person_full.accounts[0].logins.length, 2, 'logins were different so they did not get merged')
-//                 t.end()
-//               })
-//             })
-//           })
-//         })
-//       })
-//     })
-//   })
-// })
+test('merge two people into one', function (t) {
+  var fingerprint2 = '2abced2'
+  var userloginID2 = 'asff2fdsd'
+  setup('test7', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+    whoaru.addFingerprint(fingerprint, function (err) {
+      t.error(err, 'callback ok')
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person1) {
+        t.error(err, 'callback ok')
+        whoaru.addFingerprint(fingerprint2, function (err) {
+          t.error(err, 'callback ok')
+          whoaru.addLogin(fingerprint2, userloginID2, loginType, app, space, loginDetails, function (err, person2) {
+            t.error(err, 'callback ok')
+            whoaru.mergePerson(person2._id, person1._id, function (err) {
+              t.error(err, 'successfully merged')
+              whoaru.getPerson(person1._id, function (err, person_full) {
+                t.error(err, 'callback ok')
+                t.equals(person_full.accounts.length, 1, 'account got merged because it was the same app and space')
+                t.equals(person_full.accounts[0].logins.length, 2, 'logins were different so they did not get merged')
+                t.end()
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+})
 
 function setup (name, t, cb) {
 
