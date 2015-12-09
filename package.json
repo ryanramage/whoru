@@ -12,6 +12,7 @@
     "lodash.flatten": "^3.0.2",
     "memdown": "^1.1.0",
     "monotonic-timestamp": "0.0.9",
+    "pouchdb": "^5.1.0",
     "squuid": "^1.0.0",
     "through2": "^2.0.0"
   },
