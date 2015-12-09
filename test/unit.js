@@ -244,7 +244,7 @@ test('merge two people into one', function (t) {
 
 function setup (name, t, cb) {
 
-  var db = new PouchDB(name, {db : require('memdown')});
+  var db = new PouchDB(name, {db: require('memdown')})
 
   cb(null, db)
 }
