@@ -1,6 +1,6 @@
 {
   "name": "whoru",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Who are you? Tackle the thorny issue of identity association.",
   "bin": "./bin/cli.js",
   "main": "./lib/index.js",
@@ -8,12 +8,11 @@
     "async": "^1.5.0",
     "lodash.clonedeep": "^3.0.2",
     "lodash.flatten": "^3.0.2",
-    "pouchdb": "^5.1.0",
     "squuid": "^1.0.0"
   },
   "devDependencies": {
     "memdown": "^1.1.0",
-    "circular-json": "^0.3.0",
+    "pouchdb": "^5.1.0",
     "standard": "^4.5.4",
     "tap": "^0.4.12",
     "tape": "^2.14.0"
