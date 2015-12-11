@@ -44,7 +44,7 @@ First of all, you need to fingerprint on the client device. Something like
 Back on the server you will add this fingerprint as soon as you can. Eg, you dont need login info
 
     // whoru is backed by a pouchdb
-    var db = new PouchDB(whoru)
+    var db = new PouchDB('whoru')
     var whoru = require('whoru')(db)
 
 

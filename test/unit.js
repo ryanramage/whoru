@@ -144,9 +144,12 @@ test('test same fingerprint used to login with a different loginType, same space
           whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
             t.error(err, 'callback ok')
             t.equals(person1._id, person_test._id, 'same person')
-            t.equal(person1.accounts.length, 1, 'only one account')
-            t.equal(person1.accounts[0].space, space, 'account is the right space')
-            t.ok(person1.accounts[0].selected, 'correct account is selected')
+            t.equal(person_test.accounts.length, 1, 'only one account')
+            t.equal(person_test.accounts[0].space, space, 'account is the right space')
+            t.ok(person_test.accounts[0].selected, 'correct account is selected')
+
+            // there should be two login docs
+            t.equal(person_test.accounts[0].logins.length, 2, 'two logins')
             t.end()
           })
         })
