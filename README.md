@@ -9,8 +9,8 @@ This module just tries to relate the following nouns.
 Nouns:
 
  - *fingerprint*: a hash that represents a single device.
- - *login*. A single login path that has a bunch of device fingerprints. We will need to associate an login to a fingerprint at login.
- - *account*. A user account. Might have multiple login paths, eg email, oauth through providers. 
+ - *login*. A single login, eg email, social, oauth, that has a bunch of device fingerprints. We will need to associate an login to a fingerprint at login.
+ - *account*. A user account. Might have multiple logins. 
  - *person*. A person has one or more user accounts and fingerprints.
  - *app* an logical thing a Person uses, like the engine, redforms, or hometribe
  - *space* like a realtors website. It is the partition of data in an app so data does not bleed between websites. 
@@ -43,8 +43,8 @@ First of all, you need to fingerprint on the client device. Something like
 
 Back on the server you will add this fingerprint as soon as you can. Eg, you dont need login info
 
-    var levelup = require('levelup')
-    var db = levelup('./mydb')
+    // whoru is backed by a pouchdb
+    var db = new PouchDB(whoru)
     var whoru = require('whoru')(db)
 
 
