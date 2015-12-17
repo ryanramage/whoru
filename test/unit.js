@@ -175,7 +175,13 @@ test('test different fingerprint, but same userLoginID', function (t) {
             t.equal(person2.accounts.length, 1, 'only one account')
             t.equal(person2.accounts[0].space, space, 'account is the right space')
             t.ok(person2.accounts[0].selected, 'correct account is selected')
-            t.end()
+
+            // check that we can retrieve the person by the fingerprint2
+            whoaru.findPerson(fingerprint2, app, space, function (err, person_test) {
+              t.error(err, 'callback ok')
+              t.equal(person_test._id, person1._id, 'found the right person')
+              t.end()
+            })
           })
         })
       })
@@ -207,7 +213,13 @@ test('test different fingerprint and space, but same userLoginID', function (t) 
               if (_account.space === space2) t.ok(_account.selected, 'the correct account is selected')
               else t.notOk(_account.selected, 'other accounts are not selected')
             })
-            t.end()
+
+            // check that we can retrieve the person by the fingerprint2
+            whoaru.findPerson(fingerprint2, app, space2, function (err, person_test) {
+              t.error(err, 'callback ok')
+              t.equal(person_test._id, person1._id, 'found the right person')
+              t.end()
+            })
           })
         })
       })
