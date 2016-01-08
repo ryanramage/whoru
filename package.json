@@ -2,7 +2,6 @@
   "name": "whoru",
   "version": "2.0.1",
   "description": "Who are you? Tackle the thorny issue of identity association.",
-  "bin": "./bin/cli.js",
   "main": "./lib/index.js",
   "dependencies": {
     "async": "^1.5.0",
