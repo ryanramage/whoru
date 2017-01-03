@@ -254,6 +254,29 @@ test('test null fingerprint on login, and then login with a not null later seque
   })
 })
 
+test('test empty fingerprint on login, and then login with a not null later sequence, and search', function (t) {
+  setup('test9', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+
+    whoaru.addLogin('', userloginID, loginType, app, space, loginDetails, function (err, login1) {
+      t.error(err, 'callback ok')
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, login2) {
+        t.error(err, 'callback ok')
+
+        // now we should be able to find the person
+        whoaru.findPerson(fingerprint, app, space, function (err, person_test) {
+          t.error(err, 'callback ok')
+          var person1_id = login1._id.split('/')[0]
+          t.equal(person_test._id, person1_id, 'found the right person')
+          t.end()
+        })
+
+      })
+    })
+  })
+})
+
 
 
 function setup (name, t, cb) {
