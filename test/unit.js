@@ -1,6 +1,7 @@
 var Whoaru = require('../lib/index')
 var test = require('tape')
 var PouchDB = require('pouchdb')
+var ddocs = require('../lib/ddocs')
 var fingerprint = 'abced'
 var app = 'forms'
 var space = 'rwp-1937'
@@ -257,9 +258,30 @@ test('merge two people into one', function (t) {
   })
 })
 
+test('test null fingerprint on login, and then login with a not null later sequence, and search', function (t) {
+  setup('test8', t, function (err, db) {
+    if (err) return console.log(err)
+    var whoaru = Whoaru(db)
+
+    whoaru.addLogin(null, userloginID, loginType, app, space, loginDetails, function (err, person) {
+      t.error(err, 'callback ok')
+      whoaru.addLogin(fingerprint, userloginID, loginType, app, space, loginDetails, function (err, person) {
+        t.error(err, 'callback ok')
+        db.allDocs({include_docs: true}, function (err, results) {
+          console.log(results.rows)
+          t.end()
+
+        })
+      })
+    })
+  })
+})
+
+
+
 function setup (name, t, cb) {
-
   var db = new PouchDB(name, {db: require('memdown')})
-
-  cb(null, db)
+  ddocs(db, function (err) {
+    cb(null, db)
+  })
 }
